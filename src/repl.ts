@@ -1,13 +1,6 @@
-import { createInterface } from 'node:readline';
-import { getCommands } from './command.js';
+import { State } from './state.js';
 
-export function startREPL() {
-  const rl = createInterface({
-    input: process.stdin,
-    output: process.stdout,
-    prompt: 'Pokedex > ',
-  });
-
+export function startREPL({ rl, commands }: State) {
   rl.prompt();
 
   rl.on('line', (input) => {
@@ -18,7 +11,6 @@ export function startREPL() {
     }
 
     const commandName = words[0];
-    const commands = getCommands();
     const cmd = commands[commandName];
 
     if (!cmd) {
@@ -28,7 +20,7 @@ export function startREPL() {
     }
 
     try {
-      cmd.callback(commands);
+      cmd.callback({ rl, commands });
     } catch (err) {
       console.log(err);
     }
