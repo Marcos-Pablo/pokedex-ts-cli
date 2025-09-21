@@ -1,9 +1,10 @@
 import { State } from './state.js';
 
-export function startREPL({ rl, commands }: State) {
+export function startREPL(state: State) {
+  const { rl, commands } = state;
   rl.prompt();
 
-  rl.on('line', (input) => {
+  rl.on('line', async (input) => {
     const words = cleanInput(input);
     if (words.length === 0) {
       rl.prompt();
@@ -20,9 +21,9 @@ export function startREPL({ rl, commands }: State) {
     }
 
     try {
-      cmd.callback({ rl, commands });
+      await cmd.callback(state);
     } catch (err) {
-      console.log(err);
+      console.log(`Error: ${err instanceof Error ? err.message : 'Unknown error'}\n`);
     }
 
     rl.prompt();
