@@ -1,10 +1,25 @@
+import { Cache } from './pokecache.js';
+
 export class PokeAPI {
   private static readonly baseURL = 'https://pokeapi.co/api/v2';
+  private readonly cache: Cache;
 
-  constructor() {}
+  constructor(cacheInterval: number) {
+    this.cache = new Cache(cacheInterval);
+  }
+
+  closeCache() {
+    this.cache.stopReapLoop();
+  }
 
   async fetchLocations(pageURL?: string): Promise<ShallowLocationAreas> {
-    const url = pageURL ?? `${PokeAPI.baseURL}/location-area/`;
+    const url = pageURL || `${PokeAPI.baseURL}/location-area`;
+    const cached = this.cache.get<ShallowLocationAreas>(url);
+
+    if (cached) {
+      return cached;
+    }
+
     try {
       const response = await fetch(url);
 
@@ -12,21 +27,33 @@ export class PokeAPI {
         throw new Error(`${response.status} ${response.statusText}`);
       }
 
-      return (await response.json()) as ShallowLocationAreas;
+      const shallowLocationAreas: ShallowLocationAreas = await response.json();
+      this.cache.add<ShallowLocationAreas>(url, shallowLocationAreas);
+      return shallowLocationAreas;
     } catch (err) {
       throw new Error(`Error fetching location areas: ${err instanceof Error ? err.message : 'Unknown Error'}`);
     }
   }
 
   async fetchLocation(locationName: string): Promise<LocationArea> {
+    const url = `${PokeAPI.baseURL}/location-area/${locationName}`;
+    const cached = this.cache.get<LocationArea>(url);
+
+    if (cached) {
+      return cached;
+    }
+
     try {
-      const response = await fetch(`${PokeAPI.baseURL}/location-area/${locationName}`);
+      const response = await fetch(url);
 
       if (!response.ok) {
         throw new Error(`${response.status} ${response.statusText}`);
       }
 
-      return (await response.json()) as LocationArea;
+      const locationArea: LocationArea = await response.json();
+      this.cache.add<LocationArea>(url, locationArea);
+
+      return locationArea;
     } catch (err) {
       throw new Error(`Error fetching location area details: ${err instanceof Error ? err.message : 'Unknown Error'}`);
     }
