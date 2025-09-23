@@ -19,6 +19,7 @@ export async function commandCatch(state: State, ...args: string[]) {
   }
 
   console.log(`${pokemonName} was caugth!`);
+  console.log('You may now inspect it with the inspect command.');
   pokedex[pokemonName] = pokemon;
   console.log();
 }
