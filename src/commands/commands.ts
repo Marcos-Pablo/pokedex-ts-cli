@@ -5,7 +5,7 @@ import { commandHelp } from './command-help.js';
 import { commandInspect } from './command-inspect.js';
 import { commandMapForward, commandMapBack } from './command-map.js';
 import { commandPokedex } from './command-pokedex.js';
-import { CLICommand } from './state.js';
+import { CLICommand } from '../state.js';
 
 export function getCommands(): Record<string, CLICommand> {
   return {

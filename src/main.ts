@@ -1,4 +1,4 @@
-import { startREPL } from './repl.js';
+import { startREPL } from './repl/repl.js';
 import { initState } from './state.js';
 
 async function main() {
