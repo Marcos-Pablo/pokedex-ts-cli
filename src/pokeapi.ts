@@ -58,7 +58,43 @@ export class PokeAPI {
       throw new Error(`Error fetching location area details: ${err instanceof Error ? err.message : 'Unknown Error'}`);
     }
   }
+
+  async fetchPokemon(pokemonName: string): Promise<Pokemon> {
+    const url = `${PokeAPI.baseURL}/pokemon/${pokemonName}`;
+
+    const cached = this.cache.get<Pokemon>(url);
+
+    if (cached) {
+      return cached;
+    }
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`${response.status} ${response.statusText}`);
+      }
+
+      const pokemon: Pokemon = await response.json();
+      this.cache.add<Pokemon>(url, pokemon);
+
+      return pokemon;
+    } catch (err) {
+      throw new Error(`Error fetching pokemon: ${err instanceof Error ? err.message : 'Unknown Error'}`);
+    }
+  }
 }
+
+export type Pokemon = {
+  name: string;
+  base_experience: number;
+  height: number;
+  weight: number;
+  stats: {
+    base_stat: number;
+    stat: NamedApiResource;
+  };
+};
 
 export type ShallowLocationAreas = {
   count: number;
