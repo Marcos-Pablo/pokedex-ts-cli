@@ -1,4 +1,4 @@
-import { State } from '../state.js';
+import { State } from '../state';
 
 export async function commandCatch(state: State, ...args: string[]) {
   const pokemonName = args[0];

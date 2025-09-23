@@ -1,4 +1,4 @@
-import { State } from '../state.js';
+import { State } from '../state';
 
 export async function commandMapForward(state: State) {
   await mapDirection(state, 'next');
