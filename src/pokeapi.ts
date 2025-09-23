@@ -93,7 +93,8 @@ export type Pokemon = {
   stats: {
     base_stat: number;
     stat: NamedApiResource;
-  };
+  }[];
+  types: { type: NamedApiResource }[];
 };
 
 export type ShallowLocationAreas = {

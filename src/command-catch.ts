@@ -20,4 +20,5 @@ export async function commandCatch(state: State, ...args: string[]) {
 
   console.log(`${pokemonName} was caugth!`);
   pokedex[pokemonName] = pokemon;
+  console.log();
 }
